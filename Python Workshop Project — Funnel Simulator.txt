@@ -1,0 +1,146 @@
+Python Workshop Project — Funnel Simulator
+You are a data engineer on a Marketing team. Your task is to build a Funnel Simulator that models user flow through a marketing funnel and estimates revenue and ROI based on marketing budget and conversion rates.Customer Funnel Steps
+Landing Page Visits
+Registered Users
+Sites Created
+Premium Subscribers
+Premium Subscribers Who Stay After Trial
+Key Concepts
+Landing page visits depend solely on marketing budget and cost per user.
+Conversion rates vary randomly within realistic ranges.
+Conversion rates adjust depending on the volume of visits (with different penalties for too low or too high volumes).
+Each step has a 50% chance to get a random uplift of up to 5% on its conversion rate.
+Total revenue is calculated as:
+premiums_without_churn * average_revenue_per_paying_user
+ROI is calculated after the simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+How to Get a Random Conversion Rate
+import random
+
+rate = random.uniform(min_rate, max_rate)
+This picks a random conversion rate between the minimum and maximum rates for a funnel step.
+
+Simulation Rules
+Marketing Budget → Landing Page Visits
+landing_visits = budget // cost_per_user
+Conversion Rate Adjustment Based on Volume - From landing page to registered only !
+Use low_threshold and high_threshold to adjust conversions:
+Below low_threshold: conversions drop by neg_effect_low percent.
+Between low_threshold and high_threshold: conversions increase linearly by up to pos_effect.
+Above high_threshold: conversions drop by neg_effect_high percent.
+Uplifts
+Each funnel step has a 50% chance to receive a random uplift of up to 5% on its conversion rate.
+Revenue Calculation
+Total revenue =
+premiums_without_churn * average_revenue_per_paying_user
+ROI Calculation
+ROI = (total_revenue - budget) / budget
+Expected Output
+
+Your program should print a dictionary:
+{
+  "users_per_step": { ... },
+  "total_revenue": float,
+  "roi": float,
+  "applied_rates": { ... },
+  "uplift_triggered": { ... }
+}
+
+
+
+
+
+
+
+
+
+
+Example Parameters
+budget = 20000000  # $20 million monthly budget
+cost_per_user = 15  # $15 cost per landing page visitor
+
+conversion_ranges = {
+    "registered": (0.3, 0.5),
+    "site_created": (0.4, 0.6),
+    "premium": (0.1, 0.2),
+    "premium_no_trial_churn": (0.7, 0.9),
+}
+
+low_threshold = 400000  # 400k visits
+high_threshold = 1200000  # 1.2 million visits
+
+neg_effect_low = 0.3  # 30% drop below low threshold
+neg_effect_high = 0.2  # 20% drop above high threshold
+
+pos_effect = 0.2  # 20% increase in conversions inside healthy volume range
+
+average_revenue_per_paying_user = 120  # $120 revenue per premium user after trial
+Potential Output:
+
+
+{
+    'applied_rates': {
+        'premium': 0.19,
+        'premium_no_trial_churn': 0.81,
+        'registered': 0.49,
+        'site_created': 0.50
+    },
+    'roi': -0.69,
+    'total_revenue': 6132960,
+    'uplift_triggered': {
+        'premium': False,
+        'premium_no_trial_churn': True,
+        'registered': True,
+        'site_created': False
+    },
+    'users_per_step': {
+        'landing_page': 1333333,
+        'premium': 62767,
+        'premium_no_trial_churn': 51108,
+        'registered': 655473,
+        'site_created': 330311
+    }
+}
+
+
+
+
+
+Phased RequirementsPhase 1 — Basic Simulator
+Create a Python script that:
+Takes simulation parameters as inputs.
+Runs the simulation once and prints the output dictionary.
+Use functions to structure your code logically.
+Comment your code clearly.
+Do not use AI or external libraries like Pandas or Numpy.
+Use only basic Python (the random module is allowed).
+Phase 2 — Advanced Simulator Runner 
+Here are the requirements for the new script:
+Simulation Execution:
+Run the simulation N times.
+Vary the random conversion rates for each run.
+Ensure reproducibility by using random.seed().
+Print the average values calculated across all simulation runs.
+Conversion Rate Factors:
+Integrate support for discounts and price increases.
+Ensure these factors realistically influence conversion rates.
+Configurable Funnel Steps:
+Allow the funnel steps to be configurable.
+Accept a dictionary defining steps and their corresponding conversion ranges.
+Budget Optimization:
+Implement a suggested budget selection feature.
+This feature should test multiple budget options.
+Recommend the budget that optimizes ROI based on the simulation results.
+Feel free to utilize any libraries or AI techniques in this phase to enhance modeling or optimization.
+
